@@ -1,6 +1,10 @@
+import 'package:carparking/Screens/details.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class Home extends StatefulWidget {
@@ -13,7 +17,29 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentPageIndex = 0;
   int selecttras = 0;
+  late GoogleMapController _googleMapController;
+  Marker? _origin = null;
+  Marker? _destination = null;
+  //Directions? _info;
+  BitmapDescriptor markericon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor markericonhome = BitmapDescriptor.defaultMarker;
+  List<String> images = [
+    "https://res.cloudinary.com/dbsojp5dm/image/upload/v1695804192/car6_r31c1h.jpg",
+    "https://res.cloudinary.com/dbsojp5dm/image/upload/v1695804192/car1_mele5o.jpg",
+    "https://res.cloudinary.com/dbsojp5dm/image/upload/v1695804192/car4_wn7z1q.jpg",
+    "https://res.cloudinary.com/dbsojp5dm/image/upload/v1695804192/car5_sfpous.jpg",
+    "https://res.cloudinary.com/dbsojp5dm/image/upload/v1695804192/car3_o7ryuk.jpg",
+    "https://res.cloudinary.com/dbsojp5dm/image/upload/v1695804192/car3_o7ryuk.jpg"
+  ];
   List<String> v = ["Car", "Bicycle", "MotorBike"];
+  PageController _pageController = PageController();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _googleMapController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +50,9 @@ class _HomeState extends State<Home> {
           onTabChange: (index) {
             setState(() {
               _currentPageIndex = index;
+              _pageController.animateToPage(index,
+                  duration: Duration(milliseconds: 100),
+                  curve: Curves.bounceInOut);
             });
           },
           rippleColor:
@@ -54,12 +83,13 @@ class _HomeState extends State<Home> {
                 textStyle: TextStyle(fontSize: 10))
           ]),
       body: SafeArea(
-          child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: PageView(
-          children: [
-            SizedBox(
-              child: ListView(children: [
+          child: PageView(
+        controller: _pageController,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              child: ListView(physics: BouncingScrollPhysics(), children: [
                 const Text(
                   "Parking \nMade easy.",
                   style: TextStyle(
@@ -108,27 +138,30 @@ class _HomeState extends State<Home> {
                 const SizedBox(
                   height: 15,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Transportation Type",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "See More",
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Transportation Type",
                         style: TextStyle(
-                            color: Color(0xff5d5fef),
-                            fontSize: 12,
+                            color: Colors.white,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold),
                       ),
-                    )
-                  ],
+                      // TextButton(
+                      //   onPressed: () {},
+                      //   child: const Text(
+                      //     "See More",
+                      //     style: TextStyle(
+                      //         color: Color(0xff5d5fef),
+                      //         fontSize: 12,
+                      //         fontWeight: FontWeight.bold),
+                      //   ),
+                      // )
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.width / 2.8,
@@ -185,7 +218,7 @@ class _HomeState extends State<Home> {
                                   semanticsLabel: ''),
                               Text(
                                 v[index],
-                                style: const TextStyle(
+                                style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold),
@@ -197,23 +230,171 @@ class _HomeState extends State<Home> {
                     },
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Nearby Spots",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          "See More",
+                          style: TextStyle(
+                              color: Color(0xff5d5fef),
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
                 SizedBox(
+                  height: MediaQuery.of(context).size.height,
                   child: ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
+                      itemCount: images.length,
                       itemBuilder: (context, index) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 300,
-                          decoration:
-                              const BoxDecoration(color: Color(0xff1e1e1e)),
-                          child: const Row(),
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Details()),
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.all(8),
+                            width: MediaQuery.of(context).size.width,
+                            height: 100,
+                            decoration: BoxDecoration(
+                                color: Color(0xff1e1e1e),
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Image.network(
+                                    images[index],
+                                    height:
+                                        MediaQuery.of(context).size.width / 4,
+                                    width:
+                                        MediaQuery.of(context).size.width / 4,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "khgaDKLHFbSLHDV",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        "2km",
+                                        style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                2,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  6,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Icon(
+                                                    Icons.ev_station_outlined,
+                                                    color: Colors.white,
+                                                  ),
+                                                  Icon(
+                                                    Icons.accessible,
+                                                    color: Colors.white,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Text(
+                                              "Price",
+                                              style: TextStyle(
+                                                  color: Colors.green,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
                         );
                       }),
                 )
               ]),
-            )
-          ],
-        ),
+            ),
+          ),
+          SizedBox(
+            // height: MediaQuery.of(context).size.height,
+            child: Stack(
+              children: [
+                GoogleMap(
+                    gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+                      new Factory<OneSequenceGestureRecognizer>(
+                        () => new EagerGestureRecognizer(),
+                      ),
+                    ].toSet(),
+                    myLocationButtonEnabled: false,
+                    zoomControlsEnabled: false,
+                    onMapCreated: (controller) {
+                      _googleMapController = controller;
+                      //_googleMapController.setMapStyle(maptheme);
+                    },
+                    initialCameraPosition: CameraPosition(
+                        target: LatLng(37.42796133580664, -122.085749655962),
+                        zoom: 14)),
+              ],
+            ),
+          ),
+          SizedBox(
+            child: Center(
+              child: Text(
+                "Profile screen",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          )
+        ],
       )),
     );
   }
