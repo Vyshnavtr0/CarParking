@@ -23,6 +23,18 @@ class _HomeState extends State<Home> {
   //Directions? _info;
   BitmapDescriptor markericon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor markericonhome = BitmapDescriptor.defaultMarker;
+  List<String> names = [
+    "City Center Parking Garage",
+    "Sunset View Parking Lot",
+    "Green Park Car Park",
+    "Downtown Plaza Parking",
+    "Riverfront Parking Deck",
+    "Maple Street Parking",
+    "Ocean View Parking Facility",
+    "Park & Ride Lot",
+    "Airport Parking Terminal",
+    "Sports Arena Parking Zone",
+  ];
   List<String> images = [
     "https://res.cloudinary.com/dbsojp5dm/image/upload/v1695804192/car6_r31c1h.jpg",
     "https://res.cloudinary.com/dbsojp5dm/image/upload/v1695804192/car1_mele5o.jpg",
@@ -300,7 +312,7 @@ class _HomeState extends State<Home> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "khgaDKLHFbSLHDV",
+                                        names[index],
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 16,
@@ -383,6 +395,25 @@ class _HomeState extends State<Home> {
                     initialCameraPosition: CameraPosition(
                         target: LatLng(37.42796133580664, -122.085749655962),
                         zoom: 14)),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: 50,
+                      width: 250,
+                      decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Center(
+                        child: Text(
+                          "Maintain 30 /km per hour \n to avoid signal congestion",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

@@ -147,20 +147,15 @@ class _DetailsState extends State<Details> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Icon(
-                              Icons.charging_station,
+                              Icons.ev_station,
                               size: 20,
                               color: Colors.white,
                             ),
                             Icon(
-                              Icons.charging_station,
+                              Icons.accessible,
                               size: 20,
                               color: Colors.white,
                             ),
-                            Icon(
-                              Icons.charging_station,
-                              size: 20,
-                              color: Colors.white,
-                            )
                           ],
                         ),
                       ],
