@@ -11,6 +11,10 @@ class Splash extends StatefulWidget {
 class _SplashState extends State<Splash> {
   Future<void> nextScreen() async {
     await Future.delayed(const Duration(milliseconds: 2000));
+    // WidgetsBinding.instance!.addPostFrameCallback((_) {
+    //   Navigator.pushReplacement(
+    //       context, MaterialPageRoute(builder: (_) => Home()));
+    // });
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => Home()),
@@ -20,14 +24,13 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     // TODO: implement initState
-
-    super.initState();
     nextScreen();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.black,
       body: Center(
           child: Text(
